@@ -1,0 +1,10 @@
+001.scapi.patch
+002.pkcs.patch
+008.ip-mib.patch
+010.if-mib-zone.patch
+013.6852099.proxy.patch
+014.6801093.vmstat_solaris2.patch
+015.6956251.vmstat_solaris2.patch
+016.6934478.vmstat_solaris2.patch
+020.7018550.kernel_sunos5.patch
+021.7027183.kernel_sunos5.patch

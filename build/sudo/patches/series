@@ -1,0 +1,6 @@
+audit-event.patch
+printflike.patch
+libs.patch
+ssp.patch
+gettext.patch
+tz1.patch

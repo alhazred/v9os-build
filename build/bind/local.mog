@@ -1,0 +1,72 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright 2011-2012 OmniTI Computer Consulting, Inc.  All rights reserved.
+# Use is subject to license terms.
+#
+
+#
+# Copyright (c) 2013 by Delphix. All rights reserved.
+#
+
+<transform dir  path=etc -> drop>
+<transform file path=etc/bind.keys -> drop>
+<transform dir  path=usr/include -> drop>
+<transform file path=usr/include/.* -> drop>
+<transform file path=usr/sbin/arpaname -> drop>
+<transform file path=usr/sbin/ddns-confgen -> drop>
+<transform file path=usr/sbin/dnssec-.* -> drop>
+<transform file path=usr/sbin/genrandom -> drop>
+<transform file path=usr/sbin/isc-config.sh -> drop>
+<transform hardlink path=usr/sbin/bind9-config.sh -> drop>
+<transform hardlink path=usr/sbin/bind9-config -> drop>
+<transform file path=usr/sbin/isc-hmac-fixup -> drop>
+<transform hardlink path=usr/sbin/lwresd -> drop>
+<transform file path=usr/sbin/named.* -> drop>
+<transform link path=usr/sbin/named.* -> drop>
+<transform file path=usr/sbin/nsec3hash -> drop>
+<transform file path=usr/sbin/pkcs11.* -> drop>
+<transform file path=usr/share/man/man1/arpaname.1 -> drop>
+<transform file path=usr/share/man/man1/isc-config.sh.1 -> drop>
+<transform file path=usr/share/man/man1/named-rrchecker.1 -> drop>
+<transform hardlink path=usr/share/man/man1/bind9-config.sh.1 -> drop>
+<transform hardlink path=usr/share/man/man1/bind9-config.1 -> drop>
+<transform dir  path=usr/share/man/man3 -> drop>
+<transform file path=usr/share/man/man3/.* -> drop>
+<transform hardlink path=usr/share/man/man3/.* -> drop>
+<transform file path=usr/share/man/man5/named.conf.5 -> drop>
+<transform file path=usr/share/man/man8/named.* -> drop>
+<transform link path=usr/share/man/man8/named.* -> drop>
+<transform file path=usr/share/man/man8/lwresd.8 -> drop>
+<transform file path=usr/share/man/man8/dnssec-.* -> drop>
+<transform file path=usr/share/man/man8/isc-hmac-fixup.8 -> drop>
+<transform file path=usr/share/man/man8/named-journalprint.8 -> drop>
+<transform file path=usr/share/man/man8/nsec3hash.8 -> drop>
+<transform file path=usr/share/man/man8/genrandom.8 -> drop>
+<transform file path=usr/share/man/man8/named-.* -> drop>
+<transform file path=usr/share/man/man8/rndc-confgen.8 -> drop>
+<transform file path=usr/share/man/man8/ddns-confgen.8 -> drop>
+<transform file path=usr/share/man/man8/tsig-keygen.8 -> drop>
+<transform file path=usr/share/man/man8/pkcs11-.* -> drop>
+<transform dir  path=var -> drop>
+license COPYRIGHT license=ISC

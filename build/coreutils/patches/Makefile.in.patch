@@ -1,0 +1,24 @@
+diff -ru coreutils-8.20.orig/Makefile.in coreutils-8.20/Makefile.in
+--- coreutils-8.20.orig/Makefile.in	Tue Oct 23 16:26:32 2012
++++ coreutils-8.20/Makefile.in	Wed Oct 31 14:34:05 2012
+@@ -1253,7 +1253,7 @@
+ am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
+   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
+ distcleancheck_listfiles = find . -type f -print
+-pkglibexecdir = @pkglibexecdir@
++pkglibexecdir = @libexecdir@
+ 
+ # Use 'ginstall' in the definition of PROGRAMS and in dependencies to avoid
+ # confusion with the 'install' target.  The install rule transforms 'ginstall'
+diff -ru coreutils-8.20.orig/gnulib-tests/Makefile.in coreutils-8.20/gnulib-tests/Makefile.in
+--- coreutils-8.20.orig/gnulib-tests/Makefile.in	Tue Oct 23 14:22:00 2012
++++ coreutils-8.20/gnulib-tests/Makefile.in	Wed Oct 31 14:34:05 2012
+@@ -2255,7 +2255,7 @@
+     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
+   done; \
+   reldir="$$dir2"
+-pkglibexecdir = @pkglibexecdir@
++pkglibexecdir = @libexecdir@
+ ACLOCAL = @ACLOCAL@
+ ALLOCA = @ALLOCA@
+ ALLOCA_H = @ALLOCA_H@

@@ -1,0 +1,10 @@
+--- Makefile.in.orig	Wed Feb  4 02:34:53 2015
++++ Makefile.in	Mon Mar  2 10:53:00 2015
+@@ -419,7 +418,6 @@
+ 	ntpdate		\
+ 	ntpdc		\
+ 	ntpq		\
+-	ntpsnmpd	\
+ 	parseutil	\
+ 	adjtimed	\
+ 	clockstuff	\

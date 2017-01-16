@@ -1,0 +1,5 @@
+install.c.patch
+man-sections.patch
+mountlist.c.patch
+who.c.patch
+Makefile.in.patch

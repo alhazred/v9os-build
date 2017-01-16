@@ -1,0 +1,29 @@
+--- illumos-kvm-cmd-1.0.3/build.sh.orig	Tue Oct  9 19:42:05 2012
++++ illumos-kvm-cmd-1.0.3/build.sh	Tue Oct  9 19:45:37 2012
+@@ -11,6 +11,7 @@
+ PNGDIR="${PWD}/libpng-1.5.4"
+ PNGINC="${PNGDIR}/proto/usr/local/include"
+ PNGLIB="${PNGDIR}/proto/usr/local/lib"
++PREFIX="${PREFIX:-/smartdc}"
+ 
+ if [[ ! -d ${PNGDIR} ]]; then
+     (curl -k https://download.joyent.com/pub/kvm-cmd/libpng-1.5.4.tar.gz | \
+@@ -43,7 +44,9 @@
+     --cc=$CC \
+     --extra-cflags="${XCFLAGS}" \
+     --extra-ldflags="${XLDFLAGS}" \
+-    --prefix=/smartdc \
++    --prefix=$PREFIX \
++    --sysconfdir=/etc \
++    --install=/usr/gnu/bin/install \
+     --audio-card-list= \
+     --audio-drv-list= \
+     --disable-bluez \
+@@ -73,6 +76,7 @@
+ #
+ KERNEL_SOURCE="${KERNEL_SOURCE:-$(pwd)/../../illumos}"
+ CTFBINDIR="$KERNEL_SOURCE"/usr/src/tools/proto/root_i386-nd/opt/onbld/bin/i386
++export CTFBINDIR
+ export PATH="$PATH:$CTFBINDIR"
+ 
+ if [[ -z "$CONFIGURE_ONLY" ]]; then

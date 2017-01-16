@@ -1,0 +1,5 @@
+build.sh.patch
+configure.patch
+#ctf.sh.patch
+ncurses-include.patch
+remove-vnd.patch
