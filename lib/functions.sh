@@ -24,6 +24,7 @@
 # Copyright 2015 OmniTI Computer Consulting, Inc.  All rights reserved.
 # Use is subject to license terms.
 # Copyright (c) 2014 by Delphix. All rights reserved.
+# Copyright 2016 Alexander Eremin <alexander.r.eremin@gmail.com>
 #
 
 umask 022

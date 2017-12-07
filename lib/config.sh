@@ -22,6 +22,7 @@
 #
 # Copyright 2016 OmniTI Computer Consulting, Inc.  All rights reserved.
 # Copyright (c) 2015 by Delphix. All rights reserved.
+# Copyright 2017 Alexander Eremin <alexander.r.eremin@gmail.com>
 #
 #############################################################################
 # Configuration for the build system
@@ -33,7 +34,7 @@ PVER=0.$RELVER
 
 # Which server to fetch files from.
 # If $MIRROR begins with a '/', it is treated as a local directory.
-MIRROR=mirrors.omniti.com
+MIRROR=mirrors.omniosce.org
 
 # Default prefix for packages (may be overridden)
 PREFIX=/usr
