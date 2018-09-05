@@ -42,8 +42,8 @@
 # NOTE: patches will obviously have to be checked often.
 
 PROG=bash       # App name
-VER=4.3         # App version
-PATCHLEVEL=42   # Patch level
+VER=4.4
+PATCHLEVEL=23
 VERHUMAN="$VER patchlevel $PATCHLEVEL"
 PKG=shell/bash  # Package name (without prefix)
 SUMMARY="GNU Bourne-Again shell (bash)"
@@ -109,13 +109,13 @@ reset_configure_opts
 # Files pilfered from upstream userland-gate
 install_files() {
     logmsg "Installing extra files"
-    logcmd cp $MYDIR/files/rbash.1 $DESTDIR$PREFIX/share/man/man1/
+    logcmd cp files/rbash.1 $DESTDIR$PREFIX/share/man/man1/
     logcmd mkdir -p $DESTDIR/etc/bash
     logcmd mkdir -p $DESTDIR/etc/skel
-    logcmd cp $MYDIR/files/etc.bash.bash_completion $DESTDIR/etc/bash/bash_completion
-    logcmd cp $MYDIR/files/etc.bash.bashrc $DESTDIR/etc/bash/bashrc.example
-    logcmd cp $MYDIR/files/etc.bash.inputrc $DESTDIR/etc/bash/inputrc.example
-    logcmd cp $MYDIR/files/etc.skel.bashrc $DESTDIR/etc/skel/.bashrc
+    logcmd cp files/etc.bash.bash_completion $DESTDIR/etc/bash/bash_completion
+    logcmd cp files/etc.bash.bashrc $DESTDIR/etc/bash/bashrc.example
+    logcmd cp files/etc.bash.inputrc $DESTDIR/etc/bash/inputrc.example
+    logcmd cp files/etc.skel.bashrc $DESTDIR/etc/skel/.bashrc
 }
 
 make_symlink() {
