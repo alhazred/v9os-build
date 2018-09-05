@@ -28,8 +28,10 @@
 . ../../lib/functions.sh
 
 PROG=ncurses
-VER=6.0
+VER=6.1-20180818
 VERHUMAN=$VER
+BUILDDIR=$PROG-$VER
+VER=${VER/-/.}
 PKG=library/ncurses
 SUMMARY="A CRT screen handling and optimization package."
 DESC="$SUMMARY"
@@ -92,8 +94,8 @@ build_abi6() {
 }
 
 init
-#download_source $PROG $PROG $VER
-#patch_source
+download_source $PROG $PROG $VERHUMAN
+patch_source
 prep_build
 build_abi5
 build_abi6
