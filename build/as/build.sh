@@ -38,7 +38,7 @@
 PROG=make
 VER=0.5.11
 PKG=developer/as
-SUMMARY="OmniOS Bundled Assembler (aka DevPro)"
+SUMMARY="DevPro Assembler"
 DESC="$SUMMARY"
 
 DEPENDS_IPS="system/library SUNWcs system/library/math"
