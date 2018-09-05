@@ -23,8 +23,6 @@
 # Copyright 2011-2012 OmniTI Computer Consulting, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-<transform dir path=^usr/gnu/bin/sparcv9 -> drop>
-<transform file path=^usr/gnu/bin/sparcv9.* -> drop>
 <transform file path=^usr/gnu/bin/uname -> drop>
 <transform file path=^usr/gnu/share/man/man1/uname.1 -> drop>
 <transform file path=^license -> drop>

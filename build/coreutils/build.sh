@@ -28,7 +28,7 @@
 . ../../lib/functions.sh
 
 PROG=coreutils          # App name
-VER=8.25                # App version
+VER=8.30                # App version
 PKG=file/gnu-coreutils  # Package name (without prefix)
 SUMMARY="coreutils - GNU core utilities"
 DESC="GNU core utilities ($VER)"
@@ -41,7 +41,7 @@ CPPFLAGS="-I/usr/include/gmp"
 PREFIX=/usr/gnu
 reset_configure_opts
 CONFIGURE_OPTS_32="$CONFIGURE_OPTS_32 --libexecdir=/usr/lib --bindir=/usr/gnu/bin"
-CONFIGURE_OPTS_64="$CONFIGURE_OPTS_64 --libexecdir=/usr/lib/$ISAPART64"
+CONFIGURE_OPTS_64="$CONFIGURE_OPTS_64 --libexecdir=/usr/lib/sparcv9 --bindir=/usr/gnu/bin/sparcv9"
 
 link_in_usr_bin() {
     logmsg "Making links to /usr/bin"
@@ -61,6 +61,8 @@ prep_build
 build
 make_isa_stub
 link_in_usr_bin
+rm -f $DESTDIR/usr/sbin/core
+rm -f $DESTDIR/usr/sbin/log
 make_package
 clean_up
 
