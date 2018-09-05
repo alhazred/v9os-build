@@ -1,0 +1,12 @@
+diff -urN pexpect-3.3/pexpect/__init__.py pexpect-3.3.new/pexpect/__init__.py
+--- pexpect-3.3/pexpect/__init__.py	2014-06-25 18:09:16.000000000 -0700
++++ pexpect-3.3.new/pexpect/__init__.py	2015-08-13 00:25:37.900600252 -0700
+@@ -492,7 +492,7 @@
+             from termios import VEOF, VINTR
+             fd = sys.__stdin__.fileno()
+             self._INTR = ord(termios.tcgetattr(fd)[6][VINTR])
+-            self._EOF = ord(termios.tcgetattr(fd)[6][VEOF])
++            self._EOF = 4
+         except (ImportError, OSError, IOError, termios.error):
+             # unless the controlling process is also not a terminal,
+             # such as cron(1). Fall-back to using CEOF and CINTR.

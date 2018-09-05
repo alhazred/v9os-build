@@ -1,0 +1,115 @@
+This patch modifies the setup script to support OmniOS.
+
+diff -pruN '--exclude=*.orig' Python-2.7.14~/setup.py Python-2.7.14/setup.py
+--- Python-2.7.14~/setup.py	2017-11-22 10:36:21.133316080 +0000
++++ Python-2.7.14/setup.py	2017-11-22 10:36:22.700725426 +0000
+@@ -6,6 +6,7 @@ __version__ = "$Revision$"
+ import sys, os, imp, re, optparse
+ from glob import glob
+ from platform import machine as platform_machine
++from platform import processor as platform_processor
+ import sysconfig
+ 
+ from distutils import log
+@@ -454,10 +455,13 @@ class PyBuildExt(build_ext):
+             os.unlink(tmpfile)
+ 
+     def detect_modules(self):
+-        # Ensure that /usr/local is always used
+         if not cross_compiling:
+-            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
++            if host_platform != 'sunos5':
++                # Upstream notes the following for source builds:
++                #     Ensure that /usr/local is always used
++                # But we skip that for OmniOS system builds.
++                add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
++                add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+         if cross_compiling:
+             self.add_gcc_paths()
+         self.add_multiarch_paths()
+@@ -788,6 +792,13 @@ class PyBuildExt(build_ext):
+                                                      ['/usr/lib/termcap'],
+                                                      'termcap'):
+                 readline_libs.append('termcap')
++
++	    if host_platform == 'sunos5':
++		# insert '-zrecord' before the readline libraries that we
++		# want to link with to avoid rl_insert() elimination
++		readline_extra_link_args = ('-Wl,-zrecord','-lreadline','-lncurses')
++		readline_libs = ()
++
+             exts.append( Extension('readline', ['readline.c'],
+                                    library_dirs=['/usr/lib/termcap'],
+                                    extra_link_args=readline_extra_link_args,
+@@ -809,7 +820,7 @@ class PyBuildExt(build_ext):
+         # socket(2)
+         exts.append( Extension('_socket', ['socketmodule.c', 'timemodule.c'],
+                                depends=['socketmodule.h'],
+-                               libraries=math_libs) )
++                               libraries=math_libs + ['socket', 'nsl']) )
+         # Detect SSL support for the socket module (via _ssl)
+         search_for_ssl_incs_in = [
+                               '/usr/local/ssl/include',
+@@ -1373,8 +1384,11 @@ class PyBuildExt(build_ext):
+                 # _curses_panel.so must link with panelw.
+                 panel_library = 'panelw'
+             curses_libs = [curses_library]
+-            curses_incs = find_file('curses.h', inc_dirs,
+-                                    [os.path.join(d, 'ncursesw') for d in inc_dirs])
++            if host_platform == 'sunos5':
++                curses_incs = ['/usr/include/ncurses']
++            else:
++                curses_incs = find_file('curses.h', inc_dirs,
++                                        [os.path.join(d, 'ncursesw') for d in inc_dirs])
+             exts.append( Extension('_curses', ['_cursesmodule.c'],
+                                    include_dirs = curses_incs,
+                                    libraries = curses_libs) )
+@@ -1396,9 +1410,21 @@ class PyBuildExt(build_ext):
+         # If the curses module is enabled, check for the panel module
+         if (module_enabled(exts, '_curses') and
+             self.compiler.find_library_file(lib_dirs, panel_library)):
++            panel_lib_dirs = []
++            if host_platform == 'sunos5' and "DFLAGS" in os.environ:
++                # Look for libpanel under /usr/gnu/lib on OmniOS.
++                if os.environ["DFLAGS"] == '-32':
++                    panel_lib_dirs.append('/usr/gnu/lib')
++                else:
++                    if platform_processor() == 'sparc':
++                        panel_lib_dirs.append('/usr/gnu/lib/sparcv9')
++                    else:
++                        panel_lib_dirs.append('/usr/gnu/lib/amd64')
+             exts.append( Extension('_curses_panel', ['_curses_panel.c'],
+                                    include_dirs = curses_incs,
+-                                   libraries = [panel_library] + curses_libs) )
++                                   libraries = [panel_library] + curses_libs,
++                                   library_dirs = panel_lib_dirs,
++                                   runtime_library_dirs = panel_lib_dirs) )
+         else:
+             missing.append('_curses_panel')
+ 
+@@ -1613,9 +1639,14 @@ class PyBuildExt(build_ext):
+                 sysconfig.get_config_var('POSIX_SEMAPHORES_NOT_ENABLED')):
+                 multiprocessing_srcs.append('_multiprocessing/semaphore.c')
+ 
++        multiproc_libs = []
++        if host_platform == 'sunos5':
++            multiproc_libs = [ "xnet" ]
++
+         if sysconfig.get_config_var('WITH_THREAD'):
+             exts.append ( Extension('_multiprocessing', multiprocessing_srcs,
+                                     define_macros=macros.items(),
++                                    libraries=multiproc_libs,
+                                     include_dirs=["Modules/_multiprocessing"]))
+         else:
+             missing.append('_multiprocessing')
+@@ -2109,7 +2140,8 @@ class PyBuildExt(build_ext):
+             # this option. If you want to compile ctypes with the Sun
+             # compiler, please research a proper solution, instead of
+             # finding some -z option for the Sun compiler.
+-            extra_link_args.append('-mimpure-text')
++            #extra_link_args.append('-mimpure-text')
++            pass
+ 
+         elif host_platform.startswith('hp-ux'):
+             extra_link_args.append('-fPIC')

@@ -681,7 +681,7 @@ make_package() {
     fi
     echo "set name=pkg.summary value=\"$SUMMARY\"" >> $MY_MOG_FILE
     echo "set name=pkg.descr value=\"$DESCSTR\"" >> $MY_MOG_FILE
-    echo "set name=publisher value=\"sa@omniti.com\"" >> $MY_MOG_FILE
+    echo "set name=publisher value=\"v9os\"" >> $MY_MOG_FILE
     if [[ -f $SRCDIR/local.mog ]]; then
         LOCAL_MOG_FILE=$SRCDIR/local.mog
     fi
@@ -1005,6 +1005,7 @@ python_build() {
     ISALIST=
     export ISALIST
     pre_python_32
+    PYTHON=/usr/bin/python2.7
     logmsg "--- setup.py (32) build"
     logcmd $PYTHON ./setup.py build $PYBUILD32OPTS ||
         logerr "--- build failed"
@@ -1016,6 +1017,7 @@ python_build() {
     ISALIST="sparcv9"
     export ISALIST
     pre_python_64
+    PYTHON=/usr/bin/sparcv9/python
     logmsg "--- setup.py (64) build"
     logcmd $PYTHON ./setup.py build $PYBUILD64OPTS ||
         logerr "--- build failed"
@@ -1025,7 +1027,7 @@ python_build() {
         logerr "--- install failed"
     popd > /dev/null
 
-    mv $DESTDIR/usr/lib/python2.6/site-packages $DESTDIR/usr/lib/python2.6/vendor-packages ||
+    mv $DESTDIR/usr/lib/python2.7/site-packages $DESTDIR/usr/lib/python2.7/vendor-packages ||
         logerr "Cannot move from site-packages to vendor-packages"
 }
 

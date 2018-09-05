@@ -28,19 +28,17 @@
 . ../../lib/functions.sh
 
 PROG=binutils
-VER=2.25
+VER=2.31.1
 VERHUMAN=$VER
 PKG=developer/gnu-binutils
 SUMMARY="$PROG -  a collection of binary tools"
 DESC="$SUMMARY"
 
-#BUILD_DEPENDS_IPS="gcc44"
 [[ "$BUILDARCH" == "both" ]] && BUILDARCH=32
 
-CONFIGURE_OPTS="--enable-gold=yes --exec-prefix=/usr/gnu --program-prefix=g"
+CONFIGURE_OPTS="--enable-gold=yes --exec-prefix=/usr/gnu --program-prefix=g  --enable-largefile
+    --with-system-zlib"
 
-# Use old gcc4 standards level for this.
-CFLAGS="$CFLAGS -std=gnu89"
 
 make_prog() {
     [[ -n $NO_PARALLEL_MAKE ]] && MAKE_JOBS=""

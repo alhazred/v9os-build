@@ -1,5 +1,5 @@
 # Package server URL and publisher
-PKGPUBLISHER=on-nightly
+PKGPUBLISHER=v9os
 #: ${PKGSRVR:=http://pkg-il-1.int.omniti.net:10006/}
 
 # To create a on-disk repo in the top level of your checkout

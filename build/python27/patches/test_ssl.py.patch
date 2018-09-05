@@ -1,0 +1,14 @@
+Since we always build in the C locale, change the filename so that the test will run.
+
+diff -pruN '--exclude=*.orig' Python-2.7.15~/Lib/test/test_ssl.py Python-2.7.15/Lib/test/test_ssl.py
+--- Python-2.7.15~/Lib/test/test_ssl.py	2018-04-30 00:47:33.000000000 +0000
++++ Python-2.7.15/Lib/test/test_ssl.py	2018-05-01 17:12:34.437519952 +0000
+@@ -1001,7 +1001,7 @@ class ContextTests(unittest.TestCase):
+         with self.assertRaises(ssl.SSLError) as cm:
+             ctx.load_dh_params(CERTFILE)
+         with support.temp_dir() as d:
+-            fname = os.path.join(d, u'dhpäräm.pem')
++            fname = os.path.join(d, u'dhparam.pem')
+             shutil.copy(DHFILE, fname)
+             ctx.load_dh_params(fname)
+ 

@@ -29,7 +29,7 @@
 #############################################################################
 
 # Default branch
-RELVER=151100
+RELVER=151101
 PVER=0.$RELVER
 
 # Which server to fetch files from.
@@ -100,7 +100,7 @@ PERL_MAKE_TEST=1
 # Python
 #############################################################################
 PYTHONPATH=/usr
-PYTHON=$PYTHONPATH/bin/python2.6
+PYTHON=$PYTHONPATH/bin/python2.7
 PYTHONLIB=$PYTHONPATH/lib
 
 

@@ -1,0 +1,15 @@
+# http://bugs.python.org/issue17964 was fixed in 3.4 but not back-ported so we
+# need this patch for 2.7 .
+
+diff -pruN '--exclude=*.orig' Python-2.7.14~/Modules/posixmodule.c Python-2.7.14/Modules/posixmodule.c
+--- Python-2.7.14~/Modules/posixmodule.c	2017-11-22 10:36:27.550154224 +0000
++++ Python-2.7.14/Modules/posixmodule.c	2017-11-22 10:36:30.146246782 +0000
+@@ -8566,7 +8566,7 @@ posix_sysconf(PyObject *self, PyObject *
+     int name;
+ 
+     if (PyArg_ParseTuple(args, "O&:sysconf", conv_sysconf_confname, &name)) {
+-        int value;
++        long value;
+ 
+         errno = 0;
+         value = sysconf(name);

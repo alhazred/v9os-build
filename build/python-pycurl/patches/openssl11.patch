@@ -1,0 +1,19 @@
+diff -ru pycurl-7.43.0.1~/src/pycurl.h pycurl-7.43.0.1/src/pycurl.h
+--- pycurl-7.43.0.1~/src/pycurl.h	2017-12-03 19:03:17.000000000 +0000
++++ pycurl-7.43.0.1/src/pycurl.h	2018-05-16 21:41:45.091417207 +0000
+@@ -159,11 +159,13 @@
+ /* Cruft for thread safe SSL crypto locks, snapped from the PHP curl extension */
+ #if defined(HAVE_CURL_SSL)
+ # if defined(HAVE_CURL_OPENSSL)
+-#   define PYCURL_NEED_SSL_TSL
+-#   define PYCURL_NEED_OPENSSL_TSL
+ #   include <openssl/ssl.h>
+ #   include <openssl/err.h>
+ #   define COMPILE_SSL_LIB "openssl"
++#   if OPENSSL_VERSION_NUMBER < 0x1010000fL
++#      define PYCURL_NEED_SSL_TSL
++#      define PYCURL_NEED_OPENSSL_TSL
++#   endif
+ # elif defined(HAVE_CURL_GNUTLS)
+ #   include <gnutls/gnutls.h>
+ #   if GNUTLS_VERSION_NUMBER <= 0x020b00

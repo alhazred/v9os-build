@@ -30,7 +30,7 @@
 # This are used so people can see what packages get built.. pkg actually publishes
 PKG=package/pkg
 PKG=system/zones/brand/ipkg
-PKG=system/zones/brand/lipkg
+#PKG=system/zones/brand/lipkg
 SUMMARY="This isn't used, it's in the makefiles for pkg"
 DESC="This isn't used, it's in the makefiles for pkg"
 
@@ -47,10 +47,11 @@ GIT=/usr/bin/git
 HEADERS="libbrand.h libuutil.h libzonecfg.h"
 BRAND_CFLAGS="-I./gate-include"
 
-#BUILD_DEPENDS_IPS="developer/versioning/git developer/versioning/mercurial system/zones/internal"
-DEPENDS_IPS="runtime/python-26@2.6.8"
+BUILD_DEPENDS_IPS="developer/versioning/git developer/versioning/mercurial system/zones/internal"
+DEPENDS_IPS="runtime/python-27"
 PREBUILT_ILLUMOS=/code/illumos-gate
 export PREBUILT_ILLUMOS
+
 crib_headers(){
     # Use PREBUILT_ILLUMOS if available, otherwise, just pull off the
     # running system.
@@ -68,7 +69,7 @@ crib_headers(){
 }
 
 # Respect an environmental override on this, for development's sake.
-PKG_SOURCE_REPO=${PKG_SOURCE_REPO:-git@github.com:omniti-labs/pkg5.git}
+PKG_SOURCE_REPO=git@github.com:alhazred/v9os-pkg5.git
 
 clone_source(){
     logmsg "pkg -> $TMPDIR/$BUILDDIR/pkg"
@@ -93,15 +94,15 @@ build(){
     pushd $TMPDIR/$BUILDDIR/pkg/src/brand > /dev/null
     logmsg "--- brand subbuild"
     logcmd make clean
-    ISALIST=sparcv7 CC=gcc CFLAGS="$BRAND_CFLAGS" logcmd make \
+    ISALIST=sparcv9 CC=gcc CFLAGS="$BRAND_CFLAGS" logcmd make \
         CODE_WS=$TMPDIR/$BUILDDIR/pkg || logerr "brand make failed"
     popd
     logmsg "--- toplevel build"
     logcmd make clean
-    ISALIST=sparcv7 CC=gcc logcmd make \
+    ISALIST=sparcv9 CC=gcc logcmd make \
         CODE_WS=$TMPDIR/$BUILDDIR/pkg || logerr "toplevel make failed"
     logmsg "--- proto install"
-    ISALIST=sparcv7 CC=gcc logcmd make install \
+    ISALIST=sparcv9 CC=gcc logcmd make install \
         CODE_WS=$TMPDIR/$BUILDDIR/pkg || logerr "proto install failed"
     popd > /dev/null
 }
@@ -112,7 +113,7 @@ package(){
     ISALIST=sparcv7 CC=gcc logcmd make \
         CODE_WS=$TMPDIR/$BUILDDIR/pkg \
         BUILDNUM=$BUILDNUM || logerr "pkg make failed"
-    ISALIST=sparcv7 CC=gcc logcmd make publish-pkgs \
+    ISALIST=sparcv7 CC=gcc PKGSRVR=$PKGSRVR logcmd make publish-pkgs \
         CODE_WS=$TMPDIR/$BUILDDIR/pkg \
         BUILDNUM=$BUILDNUM \
         PKGSEND_OPTS="" \
@@ -124,9 +125,9 @@ package(){
 }
 
 init
-#clone_source
+clone_source
 # This is hugely expensive
 # We've committed these files to pkg, but they need to be kept up to date
-#crib_headers
+crib_headers
 build
 package

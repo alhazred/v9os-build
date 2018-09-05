@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #
-# CDDL HEADER START
+# {{{ CDDL HEADER START
 #
 # The contents of this file are subject to the terms of the
 # Common Development and Distribution License, Version 1.0 only
@@ -18,38 +18,35 @@
 # fields enclosed by brackets "[]" replaced with your own identifying
 # information: Portions Copyright [yyyy] [name of copyright owner]
 #
-# CDDL HEADER END
+# CDDL HEADER END }}}
 #
-#
-# Copyright 2011-2016 OmniTI Computer Consulting, Inc.  All rights reserved.
-# Use is subject to license terms.
 # Copyright (c) 2014 by Delphix. All rights reserved.
+# Copyright 2017 OmniTI Computer Consulting, Inc.  All rights reserved.
+# Copyright 2018 OmniOS Community Edition (OmniOSce) Association.
+# Use is subject to license terms.
 #
-# Load support functions
 . ../../lib/functions.sh
 
 PROG=git
-VER=2.9.0
+VER=2.18.0
 PKG=developer/versioning/git
-SUMMARY="$PROG - a free and open source, distributed version control system"
+SUMMARY="$PROG - distributed version control system"
 DESC="$SUMMARY"
 
-BUILD_DEPENDS_IPS="compatibility/ucb developer/build/autoconf archiver/gnu-tar"
-
-DEPENDS_IPS="runtime/python-26 \
-             web/curl \
-             library/security/openssl@1.0.2 \
-             library/zlib"
-
-TAR=gtar
+BUILD_DEPENDS_IPS="
+    compatibility/ucb
+    developer/build/autoconf
+    archiver/gnu-tar
+"
 
 # For inet_ntop which isn't detected properly in the configure script
 LDFLAGS="-lnsl"
-CFLAGS64="$CFLAGS64 -I/usr/include/sparcv9"
-CONFIGURE_OPTS="--without-tcltk
-    --with-python=/usr/bin/python
+CFLAGS64+=" -I/usr/include/sparcv9"
+CONFIGURE_OPTS="
+    --without-tcltk
     --with-curl=/usr
-    --with-openssl=/usr"
+    --with-openssl=/usr
+"
 
 save_function configure32 configure32_orig
 configure32() {
@@ -65,15 +62,15 @@ configure64() {
 
 install_man() {
     logmsg "Fetching and installing pre-built man pages"
-    if [[ ! -f ${TMPDIR}/${PROG}-manpages-${VER}.tar.gz ]]; then
+    if [ ! -f ${TMPDIR}/${PROG}-manpages-${VER}.tar.xz ]; then
         pushd $TMPDIR > /dev/null
-        get_resource $PROG/${PROG}-manpages-${VER}.tar.gz || \
+        get_resource $PROG/${PROG}-manpages-${VER}.tar.xz || \
             logerr "--- Failed to fetch tarball"
         popd > /dev/null
     fi
     logcmd mkdir -p ${DESTDIR}${PREFIX}/share/man
     pushd ${DESTDIR}${PREFIX}/share/man > /dev/null
-    extract_archive ${TMPDIR}/${PROG}-manpages-${VER}.tar.gz || \
+    extract_archive ${TMPDIR}/${PROG}-manpages-${VER}.tar.xz || \
         logerr "--- Error extracting archive"
     popd > /dev/null
 }
@@ -83,7 +80,11 @@ download_source $PROG $PROG $VER
 patch_source
 prep_build
 build
+run_testsuite
 make_isa_stub
 install_man
 make_package
 clean_up
+
+# Vim hints
+# vim:ts=4:sw=4:et:fdm=marker
