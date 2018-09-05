@@ -28,18 +28,18 @@
 . ../../lib/functions.sh
 
 PROG=glib
-VER=2.34.3
+VER=2.56.2
 PKG=library/glib2
 SUMMARY="$PROG - GNOME GLib utility library"
 DESC="$SUMMARY"
 
-DEPENDS_IPS="SUNWcs library/libffi@$FFIVERS library/zlib system/library
-	system/library/gcc-4-runtime runtime/perl"
-
-# Use old gcc4 standards level for this.
+DEPENDS_IPS="
+    runtime/python-27
+    runtime/perl
+"
 export CFLAGS="$CFLAGS -std=gnu89"
 
-CONFIGURE_OPTS="--disable-fam --disable-dtrace --with-threads=posix"
+CONFIGURE_OPTS="--disable-fam --disable-dtrace --with-threads=posix --disable-dependency-tracking"
 
 save_function configure32 configure32_orig
 save_function configure64 configure64_orig

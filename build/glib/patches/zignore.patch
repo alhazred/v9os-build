@@ -1,0 +1,30 @@
+diff -wpruN '--exclude=*.orig' a~/configure a/configure
+--- a~/configure	1970-01-01 00:00:00
++++ a/configure	1970-01-01 00:00:00
+@@ -14628,9 +14628,9 @@ $as_echo "$lt_cv_irix_exported_symbol" >
+       no_undefined_flag=' -z defs'
+       if test yes = "$GCC"; then
+ 	wlarc='$wl'
+-	archive_cmds='$CC -shared $pic_flag $wl-z ${wl}text $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags'
++	archive_cmds='$CC -shared $pic_flag $wl-z ${wl}text $wl-z ${wl}ignore $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags'
+ 	archive_expsym_cmds='echo "{ global:" > $lib.exp~cat $export_symbols | $SED -e "s/\(.*\)/\1;/" >> $lib.exp~echo "local: *; };" >> $lib.exp~
+-          $CC -shared $pic_flag $wl-z ${wl}text $wl-M $wl$lib.exp $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags~$RM $lib.exp'
++          $CC -shared $pic_flag $wl-z ${wl}text $wl-z ${wl}ignore $wl-M $wl$lib.exp $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags~$RM $lib.exp'
+       else
+ 	case `$CC -V 2>&1` in
+ 	*"Compilers 5.0"*)
+diff -wpruN '--exclude=*.orig' a~/m4macros/libtool.m4 a/m4macros/libtool.m4
+--- a~/m4macros/libtool.m4	1970-01-01 00:00:00
++++ a/m4macros/libtool.m4	1970-01-01 00:00:00
+@@ -5901,9 +5901,9 @@ _LT_EOF
+       _LT_TAGVAR(no_undefined_flag, $1)=' -z defs'
+       if test yes = "$GCC"; then
+ 	wlarc='$wl'
+-	_LT_TAGVAR(archive_cmds, $1)='$CC -shared $pic_flag $wl-z ${wl}text $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags'
++	_LT_TAGVAR(archive_cmds, $1)='$CC -shared $pic_flag $wl-z ${wl}text $wl-z ${wl}ignore $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags'
+ 	_LT_TAGVAR(archive_expsym_cmds, $1)='echo "{ global:" > $lib.exp~cat $export_symbols | $SED -e "s/\(.*\)/\1;/" >> $lib.exp~echo "local: *; };" >> $lib.exp~
+-          $CC -shared $pic_flag $wl-z ${wl}text $wl-M $wl$lib.exp $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags~$RM $lib.exp'
++          $CC -shared $pic_flag $wl-z ${wl}text $wl-z ${wl}ignore $wl-M $wl$lib.exp $wl-h $wl$soname -o $lib $libobjs $deplibs $compiler_flags~$RM $lib.exp'
+       else
+ 	case `$CC -V 2>&1` in
+ 	*"Compilers 5.0"*)
