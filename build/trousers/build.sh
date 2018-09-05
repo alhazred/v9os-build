@@ -28,14 +28,14 @@
 . ../../lib/functions.sh
 
 PROG=trousers   # App name
-VER=0.3.8       # App version
+VER=0.3.14       # App version
 VERHUMAN=$VER   # Human-readable version
 PKG=library/security/trousers  # Package name (without prefix)
 SUMMARY="trousers - TCG Software Stack - software for accessing a TPM device"
 DESC="$SUMMARY ($VER)"
 
 #BUILD_DEPENDS_IPS="developer/build/libtool developer/build/automake developer/build/autoconf developer/sunstudio12.1"
-#DEPENDS_IPS="system/library/gcc-5-runtime library/security/openssl@1.0.2"
+DEPENDS_IPS="system/library/gcc-5-runtime library/security/openssl@1.0.2"
 
 LIBS="-lbsm -lnsl -lsocket -lgen -lscf -lresolv"
 
