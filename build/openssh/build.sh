@@ -21,14 +21,14 @@
 # CDDL HEADER END
 #
 #
-# Copyright 2015 OmniTI Computer Consulting, Inc.  All rights reserved.
+# Copyright 2016 OmniTI Computer Consulting, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
 # Load support functions
 . ../../lib/functions.sh
 
 PROG=openssh
-VER=7.2p2
+VER=7.5p1
 VERHUMAN=$VER
 PKG=network/openssh
 SUMMARY="OpenSSH Client and utilities"
@@ -63,32 +63,57 @@ CONFIGURE_OPTS="
     --with-solaris-projects
     "
 
+CFLAGS+="-O2 "
 CFLAGS+="-DPAM_ENHANCEMENT -DSET_USE_PAM -DPAM_BUGFIX -DDTRACE_SFTP "
 CFLAGS+="-I/usr/include/kerberosv5 -DKRB5_BUILD_FIX -DDISABLE_BANNER "
 CFLAGS+="-DDEPRECATE_SUNSSH_OPT -DOPTION_DEFAULT_VALUE -DSANDBOX_SOLARIS"
 
 auto_reconf() {
         # This package needs a whack upside the head post-patches!
-        pushd $TMPDIR/$BUILDDIR
+        pushd $TMPDIR/$BUILDDIR >/dev/null
         autoreconf -fi
         popd
 }
 
-copy_smf() {
-    mkdir -p $TMPDIR/$BUILDDIR/smf
-    cp $SRCDIR/files/sshd-method $TMPDIR/$BUILDDIR/smf/method.sh ||
-        logerr 'method script copy failed'
-    cp $SRCDIR/files/ssh.xml $TMPDIR/$BUILDDIR/smf/manifest.xml ||
-        logerr 'manifest copy failed'
+move_manpage() {
+    local page=$1
+    local old=$2
+    local new=$3
+
+    logmsg "-- Move manpage $page.$old -> $page.$new"
+    if [ -f $page.$old ]; then
+        mv $page.$old $page.$new
+    elif [ -f $page.$new ]; then
+        logmsg "---- Was already moved"
+    else
+        logerr "---- Not found"
+    fi
 }
 
+move_manpages() {
+    pushd $TMPDIR/$BUILDDIR >/dev/null
+
+    move_manpage moduli             5 4
+    move_manpage ssh_config         5 4
+    move_manpage sshd_config        5 4
+
+    move_manpage sshd               8 1m
+    move_manpage sftp-server        8 1m
+    move_manpage ssh-keysign        8 1m
+    move_manpage ssh-pkcs11-helper  8 1m
+
+    popd
+}
+
+# Skip tests when in batch mode as they take a long time
+[ -n "$BATCH" ] && SKIP_TESTSUITE=1
+
 init
-#download_source $PROG $PROG $VER
-#patch_source
-copy_smf
+download_source $PROG $PROG $VER
+move_manpages
+patch_source
 auto_reconf
 prep_build
-run_autoconf
 build
 
 # Remove the letter from VER for packaging

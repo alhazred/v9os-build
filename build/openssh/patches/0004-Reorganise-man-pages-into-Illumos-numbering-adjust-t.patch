@@ -1,0 +1,536 @@
+From c8dca022760b47896046c397eafee93181de096f Mon Sep 17 00:00:00 2001
+From: oracle <solaris@oracle.com>
+Date: Mon, 3 Aug 2015 14:34:55 -0700
+Subject: [PATCH 04/34] Reorganise man pages into Illumos numbering, adjust
+ text
+
+---
+ Makefile.in           |   22 +-
+ contrib/ssh-copy-id.1 |    4 +-
+ scp.1                 |    8 +-
+ sftp.1                |   14 +-
+ ssh-add.1             |    4 +-
+ ssh-agent.1           |    8 +-
+ ssh-keygen.1          |   20 +-
+ ssh-keyscan.1         |    2 +-
+ ssh.1                 |   50 +-
+ 23 files changed, 4911 insertions(+), 4913 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 4bbfb736..6541b3bb 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -112,8 +112,8 @@ SSHDOBJS=sshd.o auth-rhosts.o auth-passwd.o \
+ 	sandbox-seccomp-filter.o sandbox-capsicum.o sandbox-pledge.o \
+ 	sandbox-solaris.o
+ 
+-MANPAGES	= moduli.5.out scp.1.out ssh-add.1.out ssh-agent.1.out ssh-keygen.1.out ssh-keyscan.1.out ssh.1.out sshd.8.out sftp-server.8.out sftp.1.out ssh-keysign.8.out ssh-pkcs11-helper.8.out sshd_config.5.out ssh_config.5.out
+-MANPAGES_IN	= moduli.5 scp.1 ssh-add.1 ssh-agent.1 ssh-keygen.1 ssh-keyscan.1 ssh.1 sshd.8 sftp-server.8 sftp.1 ssh-keysign.8 ssh-pkcs11-helper.8 sshd_config.5 ssh_config.5
++MANPAGES	= moduli.4.out scp.1.out ssh-add.1.out ssh-agent.1.out ssh-keygen.1.out ssh-keyscan.1.out ssh.1.out sshd.1m.out sftp-server.1m.out sftp.1.out ssh-keysign.1m.out ssh-pkcs11-helper.1m.out sshd_config.4.out ssh_config.4.out
++MANPAGES_IN	= moduli.4 scp.1 ssh-add.1 ssh-agent.1 ssh-keygen.1 ssh-keyscan.1 ssh.1 sshd.1m sftp-server.1m sftp.1 ssh-keysign.1m ssh-pkcs11-helper.1m sshd_config.4 ssh_config.4
+ MANTYPE		= @MANTYPE@
+ 
+ CONFIGFILES=sshd_config.out ssh_config.out moduli.out
+@@ -318,8 +318,8 @@ install-files:
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(sbindir)
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)1
+-	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)5
+-	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)8
++	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)4
++	$(srcdir)/mkinstalldirs $(DESTDIR)$(mandir)/$(mansubdir)1m
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(libexecdir)
+ 	(umask 022 ; $(srcdir)/mkinstalldirs $(DESTDIR)$(PRIVSEP_PATH))
+ 	$(INSTALL) -m 0755 $(STRIP_OPT) ssh$(EXEEXT) $(DESTDIR)$(bindir)/ssh$(EXEEXT)
+@@ -339,14 +339,14 @@ install-files:
+ 	$(INSTALL) -m 644 ssh-agent.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-agent.1
+ 	$(INSTALL) -m 644 ssh-keygen.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-keygen.1
+ 	$(INSTALL) -m 644 ssh-keyscan.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh-keyscan.1
+-	$(INSTALL) -m 644 moduli.5.out $(DESTDIR)$(mandir)/$(mansubdir)5/moduli.5
+-	$(INSTALL) -m 644 sshd_config.5.out $(DESTDIR)$(mandir)/$(mansubdir)5/sshd_config.5
+-	$(INSTALL) -m 644 ssh_config.5.out $(DESTDIR)$(mandir)/$(mansubdir)5/ssh_config.5
+-	$(INSTALL) -m 644 sshd.8.out $(DESTDIR)$(mandir)/$(mansubdir)8/sshd.8
++	$(INSTALL) -m 644 moduli.4.out $(DESTDIR)$(mandir)/$(mansubdir)4/moduli.4
++	$(INSTALL) -m 644 sshd_config.4.out $(DESTDIR)$(mandir)/$(mansubdir)4/sshd_config.4
++	$(INSTALL) -m 644 ssh_config.4.out $(DESTDIR)$(mandir)/$(mansubdir)4/ssh_config.4
++	$(INSTALL) -m 644 sshd.1m.out $(DESTDIR)$(mandir)/$(mansubdir)1m/sshd.1m
+ 	$(INSTALL) -m 644 sftp.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/sftp.1
+-	$(INSTALL) -m 644 sftp-server.8.out $(DESTDIR)$(mandir)/$(mansubdir)8/sftp-server.8
+-	$(INSTALL) -m 644 ssh-keysign.8.out $(DESTDIR)$(mandir)/$(mansubdir)8/ssh-keysign.8
+-	$(INSTALL) -m 644 ssh-pkcs11-helper.8.out $(DESTDIR)$(mandir)/$(mansubdir)8/ssh-pkcs11-helper.8
++	$(INSTALL) -m 644 sftp-server.1m.out $(DESTDIR)$(mandir)/$(mansubdir)1m/sftp-server.1m
++	$(INSTALL) -m 644 ssh-keysign.1m.out $(DESTDIR)$(mandir)/$(mansubdir)1m/ssh-keysign.1m
++	$(INSTALL) -m 644 ssh-pkcs11-helper.1m.out $(DESTDIR)$(mandir)/$(mansubdir)1m/ssh-pkcs11-helper.1m
+ 
+ install-sysconf:
+ 	if [ ! -d $(DESTDIR)$(sysconfdir) ]; then \
+diff --git a/contrib/ssh-copy-id.1 b/contrib/ssh-copy-id.1
+index 8850cced..270e13ef 100644
+--- a/contrib/ssh-copy-id.1
++++ b/contrib/ssh-copy-id.1
+@@ -95,7 +95,7 @@ options, respectively.
+ Rather than specifying these as command line options, it is often better to use (per-host) settings in
+ .Xr ssh 1 Ns 's
+ configuration file:
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ .El
+ .Pp
+ Default behaviour without
+@@ -188,4 +188,4 @@ option, rather than
+ .Sh "SEE ALSO"
+ .Xr ssh 1 ,
+ .Xr ssh-agent 1 ,
+-.Xr sshd 8
++.Xr sshd 1M
+diff --git a/scp.1 b/scp.1
+index 4ae87775..515fa400 100644
+--- a/scp.1
++++ b/scp.1
+@@ -116,13 +116,13 @@ Limits the used bandwidth, specified in Kbit/s.
+ Can be used to pass options to
+ .Nm ssh
+ in the format used in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ This is useful for specifying options
+ for which there is no separate
+ .Nm scp
+ command-line flag.
+ For full details of the options listed below, and their possible values, see
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ .Pp
+ .Bl -tag -width Ds -offset indent -compact
+ .It AddressFamily
+@@ -233,8 +233,8 @@ debugging connection, authentication, and configuration problems.
+ .Xr ssh-add 1 ,
+ .Xr ssh-agent 1 ,
+ .Xr ssh-keygen 1 ,
+-.Xr ssh_config 5 ,
+-.Xr sshd 8
++.Xr ssh_config 4 ,
++.Xr sshd 1M
+ .Sh HISTORY
+ .Nm
+ is based on the rcp program in
+diff --git a/sftp.1 b/sftp.1
+index fbdd00a1..a281ebcd 100644
+--- a/sftp.1
++++ b/sftp.1
+@@ -85,7 +85,7 @@ The final usage format allows for automated sessions using the
+ option.
+ In such cases, it is necessary to configure non-interactive authentication
+ to obviate the need to enter a password at connection time (see
+-.Xr sshd 8
++.Xr sshd 1M
+ and
+ .Xr ssh-keygen 1
+ for details).
+@@ -179,7 +179,7 @@ Limits the used bandwidth, specified in Kbit/s.
+ Can be used to pass options to
+ .Nm ssh
+ in the format used in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ This is useful for specifying options
+ for which there is no separate
+ .Nm sftp
+@@ -187,7 +187,7 @@ command-line flag.
+ For example, to specify an alternate port use:
+ .Ic sftp -oPort=24 .
+ For full details of the options listed below, and their possible values, see
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ .Pp
+ .Bl -tag -width Ds -offset indent -compact
+ .It AddressFamily
+@@ -285,7 +285,7 @@ on the remote host.
+ A path is useful for using
+ .Nm
+ over protocol version 1, or when the remote
+-.Xr sshd 8
++.Xr sshd 1M
+ does not have an sftp subsystem configured.
+ .It Fl v
+ Raise logging level.
+@@ -615,9 +615,9 @@ Synonym for help.
+ .Xr ssh-add 1 ,
+ .Xr ssh-keygen 1 ,
+ .Xr glob 3 ,
+-.Xr ssh_config 5 ,
+-.Xr sftp-server 8 ,
+-.Xr sshd 8
++.Xr ssh_config 4 ,
++.Xr sftp-server 1M ,
++.Xr sshd 1M
+ .Rs
+ .%A T. Ylonen
+ .%A S. Lehtinen
+diff --git a/ssh-add.1 b/ssh-add.1
+index f02b595d..b4d7c8f8 100644
+--- a/ssh-add.1
++++ b/ssh-add.1
+@@ -134,7 +134,7 @@ Add keys provided by the PKCS#11 shared library
+ Set a maximum lifetime when adding identities to an agent.
+ The lifetime may be specified in seconds or in a time format
+ specified in
+-.Xr sshd_config 5 .
++.Xr sshd_config 4 .
+ .It Fl X
+ Unlock the agent.
+ .It Fl x
+@@ -200,7 +200,7 @@ is unable to contact the authentication agent.
+ .Xr ssh-agent 1 ,
+ .Xr ssh-askpass 1 ,
+ .Xr ssh-keygen 1 ,
+-.Xr sshd 8
++.Xr sshd 1M
+ .Sh AUTHORS
+ OpenSSH is a derivative of the original and free
+ ssh 1.2.12 release by Tatu Ylonen.
+diff --git a/ssh-agent.1 b/ssh-agent.1
+index 83b2b41c..d2cad7e8 100644
+--- a/ssh-agent.1
++++ b/ssh-agent.1
+@@ -71,7 +71,7 @@ Keys are added using
+ (see
+ .Cm AddKeysToAgent
+ in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for details)
+ or
+ .Xr ssh-add 1 .
+@@ -132,7 +132,7 @@ The default is to allow loading PKCS#11 libraries from
+ .Dq /usr/lib/*,/usr/local/lib/* .
+ PKCS#11 libraries that do not match the whitelist will be refused.
+ See PATTERNS in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for a description of pattern-list syntax.
+ .It Fl s
+ Generate Bourne shell commands on
+@@ -143,7 +143,7 @@ does not look like it's a csh style of shell.
+ .It Fl t Ar life
+ Set a default value for the maximum lifetime of identities added to the agent.
+ The lifetime may be specified in seconds or in a time format specified in
+-.Xr sshd_config 5 .
++.Xr sshd_config 4 .
+ A lifetime specified for an identity with
+ .Xr ssh-add 1
+ overrides this value.
+@@ -218,7 +218,7 @@ The sockets should get automatically removed when the agent exits.
+ .Xr ssh 1 ,
+ .Xr ssh-add 1 ,
+ .Xr ssh-keygen 1 ,
+-.Xr sshd 8
++.Xr sshd 1M
+ .Sh AUTHORS
+ .An -nosplit
+ OpenSSH is a derivative of the original and free ssh 1.2.12 release by
+diff --git a/ssh-keygen.1 b/ssh-keygen.1
+index ce2213c7..f0824509 100644
+--- a/ssh-keygen.1
++++ b/ssh-keygen.1
+@@ -178,9 +178,7 @@ key in
+ .Pa ~/.ssh/id_ed25519
+ or
+ .Pa ~/.ssh/id_rsa .
+-Additionally, the system administrator may use this to generate host keys,
+-as seen in
+-.Pa /etc/rc .
++Additionally, the system administrator may use this to generate host keys.
+ .Pp
+ Normally this program generates the key and asks for a file in which
+ to store the private key.
+@@ -228,7 +226,7 @@ for which host keys
+ do not exist, generate the host keys with the default key file path,
+ an empty passphrase, default bits for the key type, and default comment.
+ This is used by
+-.Pa /etc/rc
++.Pa /lib/svc/method/sshd
+ to generate new host keys.
+ .It Fl a Ar rounds
+ When saving a new-format private key (i.e. an ed25519 key or any SSH protocol
+@@ -449,7 +447,7 @@ Disable PTY allocation (permitted by default).
+ Disable execution of
+ .Pa ~/.ssh/rc
+ by
+-.Xr sshd 8
++.Xr sshd 1M
+ (permitted by default).
+ .It Ic no-x11-forwarding
+ Disable X11 forwarding (permitted by default).
+@@ -465,7 +463,7 @@ Allows PTY allocation.
+ Allows execution of
+ .Pa ~/.ssh/rc
+ by
+-.Xr sshd 8 .
++.Xr sshd 1M .
+ .It Ic permit-x11-forwarding
+ Allows X11 forwarding.
+ .It Ic source-address Ns = Ns Ar address_list
+@@ -556,7 +554,7 @@ The start time may be specified as a date in YYYYMMDD format, a time
+ in YYYYMMDDHHMMSS format or a relative time (to the current time) consisting
+ of a minus sign followed by a relative time in the format described in the
+ TIME FORMATS section of
+-.Xr sshd_config 5 .
++.Xr sshd_config 4 .
+ The end time may be specified as a YYYYMMDD date, a YYYYMMDDHHMMSS time or
+ a relative time starting with a plus character.
+ .Pp
+@@ -722,7 +720,7 @@ Epoch to the distant future.
+ .Pp
+ For certificates to be used for user or host authentication, the CA
+ public key must be trusted by
+-.Xr sshd 8
++.Xr sshd 1M
+ or
+ .Xr ssh 1 .
+ Please refer to those manual pages for details.
+@@ -846,14 +844,14 @@ There is no need to keep the contents of this file secret.
+ .It Pa /etc/moduli
+ Contains Diffie-Hellman groups used for DH-GEX.
+ The file format is described in
+-.Xr moduli 5 .
++.Xr moduli 4 .
+ .El
+ .Sh SEE ALSO
+ .Xr ssh 1 ,
+ .Xr ssh-add 1 ,
+ .Xr ssh-agent 1 ,
+-.Xr moduli 5 ,
+-.Xr sshd 8
++.Xr moduli 4 ,
++.Xr sshd 1M
+ .Rs
+ .%R RFC 4716
+ .%T "The Secure Shell (SSH) Public Key File Format"
+diff --git a/ssh-keyscan.1 b/ssh-keyscan.1
+index d29d9d90..17a69770 100644
+--- a/ssh-keyscan.1
++++ b/ssh-keyscan.1
+@@ -166,7 +166,7 @@ $ ssh-keyscan -t rsa,dsa,ecdsa,ed25519 -f ssh_hosts | \e
+ .Ed
+ .Sh SEE ALSO
+ .Xr ssh 1 ,
+-.Xr sshd 8
++.Xr sshd 1M
+ .Sh AUTHORS
+ .An -nosplit
+ .An David Mazieres Aq Mt dm@lcs.mit.edu
+diff --git a/ssh.1 b/ssh.1
+index 4011c65a..df81563e 100644
+--- a/ssh.1
++++ b/ssh.1
+@@ -173,7 +173,7 @@ listed in order of preference.
+ See the
+ .Cm Ciphers
+ keyword in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for more information.
+ .Pp
+ .It Fl D Xo
+@@ -417,7 +417,7 @@ mode with confirmation required before slave connections are accepted.
+ Refer to the description of
+ .Cm ControlMaster
+ in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for details.
+ .Pp
+ .It Fl m Ar mac_spec
+@@ -476,7 +476,7 @@ Can be used to give options in the format used in the configuration file.
+ This is useful for specifying options for which there is no separate
+ command-line flag.
+ For full details of the options listed below, and their possible values, see
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ .Pp
+ .Bl -tag -width Ds -offset indent -compact
+ .It AddKeysToAgent
+@@ -657,7 +657,7 @@ Specifying a remote
+ will only succeed if the server's
+ .Cm GatewayPorts
+ option is enabled (see
+-.Xr sshd_config 5 ) .
++.Xr sshd_config 4 ) .
+ .Pp
+ If the
+ .Ar port
+@@ -679,7 +679,7 @@ Refer to the description of
+ and
+ .Cm ControlMaster
+ in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for details.
+ .Pp
+ .It Fl s
+@@ -758,7 +758,7 @@ See also the
+ and
+ .Cm TunnelDevice
+ directives in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ If the
+ .Cm Tunnel
+ directive is unset, it is set to the default tunnel mode, which is
+@@ -782,7 +782,7 @@ Please refer to the
+ option and the
+ .Cm ForwardX11Trusted
+ directive in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for more information.
+ .Pp
+ .It Fl x
+@@ -804,14 +804,14 @@ By default this information is sent to stderr.
+ may additionally obtain configuration data from
+ a per-user configuration file and a system-wide configuration file.
+ The file format and configuration options are described in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ .Sh AUTHENTICATION
+ The OpenSSH SSH client supports SSH protocols 1 and 2.
+ The default is to use protocol 2 only,
+ though this can be changed via the
+ .Cm Protocol
+ option in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ or the
+ .Fl 1
+ and
+@@ -946,7 +946,7 @@ See
+ and (optionally) the
+ .Cm AddKeysToAgent
+ directive in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for more information.
+ .Pp
+ Challenge-response authentication works as follows:
+@@ -1078,7 +1078,7 @@ for dynamic port-forwardings.
+ allows the user to execute a local command if the
+ .Ic PermitLocalCommand
+ option is enabled in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ Basic help is available, using the
+ .Fl h
+ option.
+@@ -1280,7 +1280,7 @@ Are you sure you want to continue connecting (yes/no)?
+ See the
+ .Cm VerifyHostKeyDNS
+ option in
+-.Xr ssh_config 5
++.Xr ssh_config 4
+ for more information.
+ .Sh SSH-BASED VIRTUAL PRIVATE NETWORKS
+ .Nm
+@@ -1290,7 +1290,7 @@ using the
+ network pseudo-device,
+ allowing two networks to be joined securely.
+ The
+-.Xr sshd_config 5
++.Xr sshd_config 4
+ configuration option
+ .Cm PermitTunnel
+ controls whether the server supports this,
+@@ -1440,7 +1440,7 @@ change their environment.
+ For more information, see the
+ .Cm PermitUserEnvironment
+ option in
+-.Xr sshd_config 5 .
++.Xr sshd_config 4 .
+ .Sh FILES
+ .Bl -tag -width Ds -compact
+ .It Pa ~/.rhosts
+@@ -1448,7 +1448,7 @@ This file is used for host-based authentication (see above).
+ On some machines this file may need to be
+ world-readable if the user's home directory is on an NFS partition,
+ because
+-.Xr sshd 8
++.Xr sshd 1M
+ reads it as root.
+ Additionally, this file must be owned by the user,
+ and must not have write permissions for anyone else.
+@@ -1473,7 +1473,7 @@ and not accessible by others.
+ Lists the public keys (DSA, ECDSA, Ed25519, RSA)
+ that can be used for logging in as this user.
+ The format of this file is described in the
+-.Xr sshd 8
++.Xr sshd 1M
+ manual page.
+ This file is not highly sensitive, but the recommended
+ permissions are read/write for the user, and not accessible by others.
+@@ -1481,7 +1481,7 @@ permissions are read/write for the user, and not accessible by others.
+ .It Pa ~/.ssh/config
+ This is the per-user configuration file.
+ The file format and configuration options are described in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ Because of the potential for abuse, this file must have strict permissions:
+ read/write for the user, and not writable by others.
+ .Pp
+@@ -1518,7 +1518,7 @@ sensitive and can (but need not) be readable by anyone.
+ Contains a list of host keys for all hosts the user has logged into
+ that are not already in the systemwide list of known host keys.
+ See
+-.Xr sshd 8
++.Xr sshd 1M
+ for further details of the format of this file.
+ .Pp
+ .It Pa ~/.ssh/rc
+@@ -1527,7 +1527,7 @@ Commands in this file are executed by
+ when the user logs in, just before the user's shell (or command) is
+ started.
+ See the
+-.Xr sshd 8
++.Xr sshd 1M
+ manual page for more information.
+ .Pp
+ .It Pa /etc/hosts.equiv
+@@ -1543,7 +1543,7 @@ rlogin/rsh.
+ .It Pa /etc/ssh/ssh_config
+ Systemwide configuration file.
+ The file format and configuration options are described in
+-.Xr ssh_config 5 .
++.Xr ssh_config 4 .
+ .Pp
+ .It Pa /etc/ssh/ssh_host_key
+ .It Pa /etc/ssh/ssh_host_dsa_key
+@@ -1560,7 +1560,7 @@ system administrator to contain the public host keys of all machines in the
+ organization.
+ It should be world-readable.
+ See
+-.Xr sshd 8
++.Xr sshd 1M
+ for further details of the format of this file.
+ .Pp
+ .It Pa /etc/ssh/sshrc
+@@ -1568,7 +1568,7 @@ Commands in this file are executed by
+ .Nm
+ when the user logs in, just before the user's shell (or command) is started.
+ See the
+-.Xr sshd 8
++.Xr sshd 1M
+ manual page for more information.
+ .El
+ .Sh EXIT STATUS
+@@ -1583,9 +1583,9 @@ if an error occurred.
+ .Xr ssh-keygen 1 ,
+ .Xr ssh-keyscan 1 ,
+ .Xr tun 4 ,
+-.Xr ssh_config 5 ,
+-.Xr ssh-keysign 8 ,
+-.Xr sshd 8
++.Xr ssh_config 4 ,
++.Xr ssh-keysign 1M ,
++.Xr sshd 1M
+ .Sh STANDARDS
+ .Rs
+ .%A S. Lehtinen
