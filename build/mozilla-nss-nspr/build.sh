@@ -28,9 +28,9 @@
 . ../../lib/functions.sh
 
 PROG=nss
-VER=3.23
+VER=3.38
 # Include NSPR version since we're downloading a combined tarball.
-NSPRVER=4.12
+NSPRVER=4.19
 # But set BUILDDIR to just be the NSS version.
 BUILDDIR=$PROG-$VER
 VERHUMAN=$VER
@@ -139,8 +139,8 @@ secv1_links() {
 
 init
 # Download combined NSS & NSPR tarball.
-#download_source $PROG $PROG "$VER-with-nspr-$NSPRVER"
-#patch_source
+download_source $PROG $PROG "$VER-with-nspr-$NSPRVER"
+patch_source
 prep_build
 build
 secv1_links
@@ -150,7 +150,7 @@ SUMMARY="Network Security Services Headers"
 DESC="$SUMMARY"
 make_package header-nss.mog
 
-DEPENDS_IPS="SUNWcs system/library/gcc-4-runtime system/library"
+DEPENDS_IPS="SUNWcs system/library/gcc-5-runtime system/library"
 #	library/nspr database/sqlite-3"
 PKG=system/library/mozilla-nss
 SUMMARY="Network Security Services Libraries"
