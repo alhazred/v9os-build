@@ -16,5 +16,5 @@ license COPYING license=BSD
 <transform file dir path=.*/jsonschema/tests -> drop>
 
 <transform file path=usr/bin \
-    -> edit path usr/bin usr/lib/python$(PYTHONVER)/bin>
+    -> edit path usr/bin usr/lib/python2.7/bin>
 

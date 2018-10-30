@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #
-# CDDL HEADER START
+# {{{ CDDL HEADER START
 #
 # The contents of this file are subject to the terms of the
 # Common Development and Distribution License, Version 1.0 only
@@ -18,37 +18,54 @@
 # fields enclosed by brackets "[]" replaced with your own identifying
 # information: Portions Copyright [yyyy] [name of copyright owner]
 #
-# CDDL HEADER END
+# CDDL HEADER END }}}
 #
-#
-# Copyright 2011-2012 OmniTI Computer Consulting, Inc.  All rights reserved.
+# Copyright 2016 OmniTI Computer Consulting, Inc.  All rights reserved.
+# Copyright 2018 OmniOS Community Edition (OmniOSce) Association.
 # Use is subject to license terms.
 #
-# Load support functions
 . ../../lib/functions.sh
 
 PROG=libxslt
-VER=1.1.28
+VER=1.1.30
 PKG=library/libxslt
 SUMMARY="The XSLT library"
 DESC="$SUMMARY"
 
-#DEPENDS_IPS="library/libxml2 library/zlib system/library system/library/math"
+RUN_DEPENDS_IPS="
+	library/libxml2
+	library/zlib
+	system/library
+	system/library/math
+"
 
-CFLAGS32="$CFLAGS32 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
-CFLAGS64="$CFLAGS64 -D_LARGEFILE_SOURCE"
+CFLAGS32+=" -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+CFLAGS64+=" -D_LARGEFILE_SOURCE"
 LDFLAGS="-lpthread"
 
-CONFIGURE_OPTS="--disable-static --with-pic --with-threads --without-crypto"
-CONFIGURE_OPTS_32="$CONFIGURE_OPTS_32 --with-python=/usr/bin/$ISAPART/python2.6"
-CONFIGURE_OPTS_64="$CONFIGURE_OPTS_64 --with-python=/usr/bin/$ISAPART64/python2.6"
+# Without --with-libxml-prefix, configure does not find /usr/bin/xml2-config!
+CONFIGURE_OPTS="
+	--disable-static
+	--with-pic
+	--without-crypto
+	--with-libxml-prefix=/usr
+"
+CONFIGURE_OPTS_32+=" --with-python=/usr/bin/$ISAPART/python2.7"
+CONFIGURE_OPTS_64+=" --with-python=/usr/bin/$ISAPART64/python2.7"
 
 NO_PARALLEL_MAKE="true"
+
+# Make clean removes the man page (xsltproc.1) so it is preserved and
+# restored between flavours (see below). However, this makes the tree
+# end up with this file missing. Force removal of any previous extracted
+# source trees to start from a clean slate.
+REMOVE_PREVIOUS=1
 
 backup_man() {
     logmsg "making a backup of xsltproc.1"
     logcmd cp $TMPDIR/$BUILDDIR/doc/xsltproc.1 $TMPDIR/$BUILDDIR/backup.1
 }
+
 save_function configure64 configure64_orig
 configure64() {
     configure64_orig
@@ -60,13 +77,11 @@ configure64() {
 save_function make_prog64 make_prog64_orig
 save_function make_prog32 make_prog32_orig
 make_prog64() {
-    logcmd perl -pi -e 's#(\$CC.*\$compiler_flags)#$1 -nostdlib#g;' libtool || \
-        logerr "libtool patch failed"
+    libtool_nostdlib libtool
     make_prog64_orig
 }
 make_prog32() {
-    logcmd perl -pi -e 's#(\$CC.*\$compiler_flags)#$1 -nostdlib#g;' libtool || \
-        logerr "libtool patch failed"
+    libtool_nostdlib libtool
     make_prog32_orig
 }
 
@@ -76,6 +91,10 @@ patch_source
 backup_man
 prep_build
 build
+python_vendor_relocate
 make_isa_stub
 make_package
 clean_up
+
+# Vim hints
+# vim:ts=4:sw=4:et:fdm=marker

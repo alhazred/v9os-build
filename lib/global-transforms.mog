@@ -104,3 +104,7 @@
 # If you ship an SMF manifest, it should be imported upon pkg install
 <transform file path=(var|lib)/svc/manifest/.*\.xml -> \
     add restart_fmri svc:/system/manifest-import:default>
+
+# temporary fix
+<transform file path=usr/bin/core$ -> drop>
+<transform file path=usr/bin/log$ -> drop>

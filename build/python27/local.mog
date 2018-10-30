@@ -5,16 +5,16 @@ license LICENSE license=PSF
 
 # Remove idle
 <transform file link path=usr/bin(/.*)?/idle -> drop >
-<transform dir file link hardlink path=usr/lib/python$(PYTHONVER)/idlelib \
+<transform dir file link hardlink path=usr/lib/python2.7/idlelib \
     -> drop>
-<transform file path=usr/lib/python$(PYTHONVER)/test/test_idle -> drop>
+<transform file path=usr/lib/python2.7/test/test_idle -> drop>
 
 # Move binaries from usr/bin to private bin
 <transform file link path=usr/bin(/.*)?/(smtpd.py|2to3) -> \
-    edit path usr/bin usr/lib/python$(PYTHONVER)/bin>
+    edit path usr/bin usr/lib/python2.7/bin>
 
 # Remove test files
-<transform file dir link hardlink path=usr/lib/python$(PYTHONVER)/test \
+<transform file dir link hardlink path=usr/lib/python2.7/test \
     -> drop>
 
 # Prevent pkgdepend from reporting an error

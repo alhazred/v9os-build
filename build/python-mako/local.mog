@@ -1,5 +1,5 @@
 license LICENSE license=MIT
 
 <transform file dir path=usr/bin -> \
-    edit path usr/bin usr/lib/python$(PYTHONVER)/bin >
+    edit path usr/bin usr/lib/python2.7/bin >
 
